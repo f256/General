@@ -3,6 +3,7 @@
 * TODO: Thread safety.
 */
 
+//TODO: For true positionalList properties, use double linking.
 template <class T>
 class LinkedBufferPosition {
   public:
@@ -14,6 +15,9 @@ class LinkedBufferPosition {
     LinkedBufferPosition<T>& operator=
                         (const LinkedBufferPosition<T> &copy_from);
     ~LinkedBufferPosition();
+
+    T getElement();
+    LinkedBufferPosition<T> *getNext();
 
     void setElement(T element);
     T replaceElement(T element);
@@ -43,9 +47,9 @@ class BoundedLinkedBuffer {
 
 //Control functions.
 
-    void changeBufferSize(unsigned int numElts);
-    void truncateBuffer(unsigned int numElts);
-    void truncateBufferFirstElts(unsigned int numElts);
+    void changeBufferSize(unsigned int maxNumElts);
+    void truncateBuffer(unsigned int maxNumElts);
+    void truncateBufferFirstElts(unsigned int maxNumElts);
     void empty();
 
 //Core Linked List functionality.
