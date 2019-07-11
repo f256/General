@@ -21,6 +21,7 @@ BoundedLinkedBuffer<T>::BoundedLinkedBuffer(unsigned int maxNumElts,
   }
   *current = LinkedBufferPosition(nullptr);
   current->setAllocated(false);
+
   size = 0;
   freeList = buffer;
   head = nullptr;
@@ -134,19 +135,28 @@ void BoundedLinkedBuffer<T>::empty() {
 
 template <class T>
 T BoundedLinkedBuffer<T>::get(unsigned int index) {
+  return getPosition(index).getElement(); //Use direct version?
+}
+
+template <class T>
+const LinkedBufferPosition<T> &getPosition(unsigned int index) {
   assert(index < size && "Index specified was out of bounds.");
 
   LinkedBufferPosition<T> *current = buffer;
   while (index--)
     current = current.getNext();
-  return current.getElement();
+  return current;
 }
 
 template <class T>
 void BoundedLinkedBuffer<T>::add(T element, unsigned int index) {
-  assert(index <= size && "Index specified was out of bounds.");
-  assert(size < maxNumElts && "Buffer is already at max capacity!");
+  addPosition(element, index);
+}
 
+template <class T>
+const LinkedBufferPosition<T> &BoundedLinkedBuffer<T>::addPosition(T element,
+                                                        unsigned int index) {
+  assert(index <= size && "Index specified was out of bounds.");
   LinkedBufferPosition<T> *newPosition = allocateNode();
   if (index == 0) {
     *newPosition = LinkedBufferPosition(element, head);
@@ -154,12 +164,11 @@ void BoundedLinkedBuffer<T>::add(T element, unsigned int index) {
     return newPosition;
   }
   LinkedBufferPosition<T> *current = head;
-
-  //Pre-inc gets you to the position before the index to add at.
   while (--index)
     current = current.getNext();
   *newPosition = LinkedBufferPosition(element, current.getNext());
   current.setNext(newPosition);
+  return newPosition;
 }
 
 template <class T>

@@ -26,7 +26,7 @@ class LinkedBufferPosition {
     void setNext(LinkedBufferPosition<T> *next);
     LinkedBufferPosition<T> *replaceNext(LinkedBufferPosition<T> *next);
 
-    void setAllocated();
+    void setAllocated(bool allocated);
   private:
     bool allocated;
     T element;
@@ -54,21 +54,32 @@ class BoundedLinkedBuffer {
     void changeBufferSize(unsigned int maxNumElts);
     void truncateBuffer(unsigned int maxNumElts);
     void truncateBufferFirstElts(unsigned int maxNumElts);
-    void clear();
+    void empty();
 
 //Core Linked List functionality.
 
     T get(unsigned int index);
+    const LinkedBufferPosition<T> &getPosition(unsigned int index);
+
     void add(T element, unsigned int index);
+    const LinkedBufferPosition<T> &addPosition(T element, unsigned int index);
+
     T remove(T element, unsigned int index);
-    T set(T element, unsigned int index);
+    T removePosition(LinkedBufferPosition<T> pos);
+
+    T replaceAtIndex(T element, unsigned int index);
+    T replaceAtPosition(T element, LinkedBufferPosition<T> pos);
 
 //Stack and Queue behavior hooks.
 
     T peek(); //=T front
+    T front();
+    const LinkedBufferPosition<T> &first();
     void push(T element);
+    const LinkedBufferPosition<T> &pushPosition(T element);
     T pop();
     void enqueue(T element);
+    const LinkedBufferPosition<T> &enqueuePosition(T element);
     T dequeue(T element);
   private:
     std::allocator &allocator;
@@ -81,3 +92,5 @@ class BoundedLinkedBuffer {
 
     reallocateBuffer(unsigned int numElts);
 };
+
+    
