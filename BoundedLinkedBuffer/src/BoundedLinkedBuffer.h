@@ -64,6 +64,10 @@ class BoundedLinkedBuffer {
     T set(T element, unsigned int index);
 
 //Stack and Queue behavior hooks.
+//This behavior may be omitted to
+//create a lighter weight class.
+
+#ifdef DS_ADAPTATION
 
     T peek(); //=T front
     void push(T element);
@@ -80,4 +84,6 @@ class BoundedLinkedBuffer {
     LinkedBufferPosition<T> *tail;
 
     reallocateBuffer(unsigned int numElts);
+
+#endif
 };
